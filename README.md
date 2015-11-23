@@ -3,12 +3,12 @@
 - Source code of modupen service build with django
 
 
-## What is moduepn?
+### What is moduepn?
 
-- <a href="https://modupen.com" target="_blank">Modupen</a> is a platform for people to tmake story in relay
+- <a href="https://modupen.com" target="_blank">Modupen</a> is a platform for people to make story in relay
 
 
-## What kinds of technologies inside?
+### What kinds of technologies inside?
 
 - Based on Amazon Web Service for deployment
 - Django 1.8.6 + Nginx + uWSGI
@@ -17,7 +17,7 @@
 - Firebase for real-time database
 
 
-## How can I customize?
+### How can I customize it?
 
 ~~~~
 $ cd {PROJECT PATH}/conf
