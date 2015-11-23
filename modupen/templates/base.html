@@ -1,0 +1,137 @@
+{% load staticfiles %}
+{% load compress %}
+{% load cache %}
+{% load i18n %}
+{% load custom_filter %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>모두펜</title>
+
+	{# Use most recent version for IE #}
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+	{# Support full screen in mobile browser #}
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="mobile-web-app-capable" content="yes">
+
+	{# Search option #}
+	<meta name="google" value="notranslate">
+	<meta name="author" content="모두펜">
+	<meta name="description" content="다함께 만드는 이야기">
+	<meta name="keywords" content="modupen, co-writing, 모두펜, 다함께 만드는 이야기">
+
+	{# Facebook Open Graph Tag #}
+	<meta property="og:title" content="모두펜" />
+	<meta property="og:site_name" content="모두펜" />
+	<meta property="og:url" content="https://modupen.com/" />
+	<meta property="og:description" content="다함께 만드는 이야기" />
+	<meta property="fb:app_id" content="{{ 'FACEBOOK_APP_ID'|get_settings_variable }}" />
+	<meta property="og:type" content="website" />
+	<meta property="og:image" content="https://res.cloudinary.com/modupen/image/upload/v1445842123/favicons/android-chrome-192x192.png" />
+
+	{% include "include/favicon_option.html" %}
+
+	{# CDN CSS #}
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/css/bootstrap-datepicker.min.css" />
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.2.7/css/fileinput.min.css" />
+	<link rel="stylesheet" type="text/css" href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" />
+
+	{# Project CSS #}
+	{% compress css %}
+	<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+	{% endcompress %}
+
+	<!--[if lte IE 8]>
+		{# Support HTML5 Section Element #}
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+		{# Support CSS Media Query #}
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	{# Google Analytics #}
+	{% if 'DEVELOPMENT_MODE'|get_settings_variable == False %}
+	<script type="text/javascript" src="{% static 'js/3rd-party/googleAnalytics.js' %}"></script>
+	{% endif %}
+</head>
+<body>
+	{# Loading Icon #}
+	<div class="uil-ring-css" id="loading-icon"></div>
+
+	{% cache 86400 noscript %}
+	{% include "include/noscript.html" %}
+	{% endcache %}
+
+	{% include "include/navbar.html" %}
+	{% include "include/sidebar.html" %}
+
+	{% comment %}
+	{% include "include/adsense.html" %}
+	{% endcomment %}
+
+	{% include "include/announcement.html" %}
+	{% include "include/tutorial.html" %}
+
+	<div class="alert alert-warning text-center hidden" id="browser-support-warning" role="alert"></div>
+
+	{% block container %}{% endblock %}
+
+	<div class="hidden" id="back-to-top">
+		<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+	</div>
+
+	{% block modal %}{% endblock %}
+
+	{% include "include/signup_modal.html" %}
+	{% include "include/first_visit_modal.html" %}
+
+	{# CDN JS #}
+	{% comment %}
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+	{% endcomment %}
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.2.7/js/fileinput.min.js"></script>
+	<script type="text/javascript" src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/locale/ko.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/locale/ja.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/locale/zh-cn.js"></script>
+	<script type="text/javascript" src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+	<script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+
+	{# 3rd party library #}
+	{% compress js %}
+	<script type="text/javascript" src="{% static 'js/3rd-party/jquery.inview.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/3rd-party/fileinput.kr.js' %}"></script>
+	{% endcompress %}
+
+	{# Common JS #}
+	{% compress js %}
+	<script type="text/javascript" src="{% static 'js/base/onLoad.js' %}"></script>
+	{% if 'DEVELOPMENT_MODE'|get_settings_variable == False %}
+	<script type="text/javascript" src="{% static 'js/base/fbOAuth.js' %}"></script>
+	{% endif %}
+	{% endcompress %}
+
+	{# Custom JS #}
+	{% compress js %}
+	{% block javascript %}{% endblock %}
+	{% endcompress %}
+
+	{# Support Placehoder for IE below version 9 #}
+	<!--[if lte IE 9]>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-placeholder/2.0.8/jquery.placeholder.min.js"></script>
+		<script type="text/javascript">
+			if(!Modernizr.input.placeholder) $('input').placeholder();
+		</script>
+	<![endif]-->
+</body>
+</html>

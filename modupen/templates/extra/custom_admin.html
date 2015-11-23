@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% load custom_filter %}
+
+{% block container %}
+<div class="container-fit">
+	<div class="page-title">
+		<div class="container">
+			관리자 페이지
+		</div>
+	</div>
+</div>
+
+<div class="container" id="custom-admin">
+	<div class="row">
+		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+			<div class="text-center">
+				계정 휴면
+			</div>
+			
+			<form action="/user/deactivate/" method="POST" id="deactivate-account-form">
+				
+				{% csrf_token %}
+				
+				<div class="input-group">
+					<div class="input-group-addon">
+						사용자 ID
+					</div>
+					<input type="number" name="user-id" class="form-control" required />
+				</div>
+				
+				<button type="submit" class="btn btn-primary btn-block btn-sm" data-loading-text="처리 중">
+					계정 휴면 처리하기
+				</button>
+			</form>
+			
+			<div class="space"></div>
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+			<div class="text-center">
+				이야기 완결
+			</div>
+			
+			<form action="/story/close/" method="POST" id="close-story-form">
+				
+				{% csrf_token %}
+				
+				<div class="input-group">
+					<div class="input-group-addon">
+						이야기 ID
+					</div>
+					<input type="number" name="story-id" class="form-control" required />
+				</div>
+				
+				<button type="submit" class="btn btn-primary btn-block btn-sm" data-loading-text="처리 중">
+					이야기 완결 처리하기
+				</button>
+			</form>
+			
+			<div class="space"></div>
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+			<div class="text-center">
+				이야기 삭제
+			</div>
+			
+			<form action="/story/delete/" method="POST" id="delete-story-form">
+				
+				{% csrf_token %}
+				
+				<div class="input-group">
+					<div class="input-group-addon">
+						이야기 ID
+					</div>
+					<input type="number" name="story-id" class="form-control" required />
+				</div>
+				
+				<button type="submit" class="btn btn-primary btn-block btn-sm" data-loading-text="삭제 중">
+					이야기 삭제하기
+				</button>
+			</form>
+			
+			<div class="space"></div>
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+			<div class="text-center">
+				댓글 삭제
+			</div>
+			
+			<form action="/comment/delete/" method="POST" id="delete-comment-form">
+				
+				{% csrf_token %}
+				
+				<div class="input-group">
+					<div class="input-group-addon">
+						댓글 ID
+					</div>
+					<input type="number" name="comment-id" class="form-control" required />
+				</div>
+				
+				<button type="submit" class="btn btn-primary btn-block btn-sm" data-loading-text="삭제 중">
+					댓글 삭제하기
+				</button>
+			</form>
+			
+			<div class="space"></div>
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+			<div class="text-center">
+				대댓글 삭제
+			</div>
+			
+			<form action="/reply/delete/" method="POST" id="delete-reply-form">
+				
+				{% csrf_token %}
+				
+				<div class="input-group">
+					<div class="input-group-addon">
+						대댓글 ID
+					</div>
+					<input type="number" name="reply-id" class="form-control" required />
+				</div>
+				
+				<button type="submit" class="btn btn-primary btn-block btn-sm" data-loading-text="삭제 중">
+					대댓글 삭제하기
+				</button>
+			</form>
+			
+			<div class="space"></div>
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+			<div class="text-center">
+				정당하게 신고한 사용자에게 필력 보상 (+{{ 'SCORE_FOR_INFORMANT'|get_settings_variable }} 필력)
+			</div>
+			
+			<form action="/user/reward/" method="POST" id="give-reward-point-form">
+				
+				{% csrf_token %}
+				
+				<div class="input-group">
+					<div class="input-group-addon">
+						사용자 ID
+					</div>
+					<input type="number" name="user-id" class="form-control" required />
+				</div>
+				
+				<button type="submit" class="btn btn-primary btn-block btn-sm" data-loading-text="삭제 중">
+					필력 보상하기
+				</button>
+			</form>
+			
+			<div class="space"></div>
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+			<div class="text-center">
+				이야기 캐쉬 업데이트
+			</div>
+			
+			<form action="/story/cache/update/" method="POST" id="update-story-cache-form">
+				
+				{% csrf_token %}
+				
+				<div class="input-group">
+					<div class="input-group-addon">
+						이야기 ID
+					</div>
+					<input type="number" name="story-id" class="form-control" required />
+				</div>
+				
+				<button type="submit" class="btn btn-primary btn-block btn-sm" data-loading-text="업데이트 중">
+					캐쉬 업데이트하기
+				</button>
+			</form>
+			
+			<div class="space"></div>
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+			<div class="text-center">
+				댓글 캐쉬 업데이트
+			</div>
+			
+			<form action="/comment/cache/update/" method="POST" id="update-comment-cache-form">
+				
+				{% csrf_token %}
+				
+				<div class="input-group">
+					<div class="input-group-addon">
+						댓글 ID
+					</div>
+					<input type="number" name="comment-id" class="form-control" required />
+				</div>
+				
+				<button type="submit" class="btn btn-primary btn-block btn-sm" data-loading-text="업데이트 중">
+					캐쉬 업데이트하기
+				</button>
+			</form>
+			
+			<div class="space"></div>
+		</div>
+		
+		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+			<div class="text-center">
+				대댓글 캐쉬 업데이트
+			</div>
+			
+			<form action="/reply/cache/update/" method="POST" id="update-reply-cache-form">
+				
+				{% csrf_token %}
+				
+				<div class="input-group">
+					<div class="input-group-addon">
+						대댓글 ID
+					</div>
+					<input type="number" name="reply-id" class="form-control" required />
+				</div>
+				
+				<button type="submit" class="btn btn-primary btn-block btn-sm" data-loading-text="업데이트 중">
+					캐쉬 업데이트하기
+				</button>
+			</form>
+			
+			<div class="space"></div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static 'js/extra/custom_admin.js' %}"></script>
+{% endblock %}

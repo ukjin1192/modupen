@@ -1,0 +1,124 @@
+{% load i18n %}
+{% load custom_filter %}
+
+<div class="modal fade" id="modal-signup" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<img src="https://res.cloudinary.com/modupen/image/upload/w_30/v1439686690/basic%20component/close_icon.png" class="close-modal" data-dismiss="modal" aria-label="Close" />
+			
+			<div class="modal-header">
+				<div class="row">
+					<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+						<div class="tab active" id="login-tab" href="#login-form-container" data-toggle="tab">
+							로그인
+						</div>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+						<div class="tab" id="signup-tab" href="#signup-form-container" data-toggle="tab">
+							가입하기
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="modal-body">
+				<div class="tab-content">
+					<div class="tab-pane fade" id="login-form-container" role="tabpanel">
+						<div class="text-center">
+							<img src="https://res.cloudinary.com/modupen/image/upload/v1440749449/flat%20ui%20icons/key.svg" class="flat-icon" />
+						</div>
+						
+						<button type="submit" class="btn btn-primary btn-block" id="fb-login-btn" data-loading-text="로그인 중">
+							facebook 으로 로그인
+						</button>
+						
+						<div class="description-message">
+							또는
+						</div>
+						
+						<hr/>
+						
+						<form action="/login/" method="POST" id="login-form">
+							{% csrf_token %}
+							<div class="input-group">
+								<div class="input-group-addon">
+									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+								</div>
+								<input type="email" name="email" class="form-control" placeholder="메일 주소" required />
+							</div>
+							<div class="input-group">
+								<div class="input-group-addon">
+									<span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+								</div>
+								<input type="password" name="password" class="form-control" placeholder="비밀번호" required />
+							</div>
+							
+							<div class="description-message">
+								<a href="/user/password/forgot/">
+									<span class="dotted-underline">비밀번호를 잊으셨나요?</span>
+								</a>
+							</div>
+							
+							<div class="alert alert-danger text-center hidden" role="alert"></div>
+							
+							<button type="submit" class="btn btn-primary btn-block" id="login-btn" data-loading-text="로그인 중">
+								로그인
+							</button>
+						</form>
+					</div>
+					
+					<div class="tab-pane fade in active" id="signup-form-container" role="tabpanel">
+						<div class="text-center">
+							<img src="https://res.cloudinary.com/modupen/image/upload/v1440749450/flat%20ui%20icons/rocket.svg" class="flat-icon" />
+						</div>
+						
+						<button type="button" class="btn btn-primary btn-block" id="fb-signup-btn" data-loading-text="가입 중">
+							facebook 으로 가입하기
+						</button>
+						
+						<div class="text-center description-message">
+							또는
+						</div>
+						
+						<hr/>
+						
+						<form action="/user/create/" method="POST" id="signup-form">
+							{% csrf_token %}
+							<div class="input-group">
+								<div class="input-group-addon">
+									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+								</div>
+								<input type="email" name="email" class="form-control" placeholder="자주 쓰는 메일 주소" required />
+							</div>
+							<div class="input-group">
+								<div class="input-group-addon">
+									<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+								</div>
+								<input type="text" name="nickname" maxlength="{{ 'NICKNAME_MAX_LENGTH'|get_settings_variable }}" class="form-control" placeholder="사용할 필명 (최대 {{ 'NICKNAME_MAX_LENGTH'|get_settings_variable }}자)" required />
+							</div>
+							<div class="input-group">
+								<div class="input-group-addon">
+									<span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+								</div>
+								<input type="password" name="password" class="form-control" placeholder="사용할 비밀번호" required />
+							</div>
+							
+							<div class="description-message">
+								<a href="/terms/" target="_blank">
+									<strong>약관 및 정책</strong>
+								</a>
+								에 동의하고 가입합니다
+							</div>
+							
+							<div class="alert alert-danger text-center hidden" role="alert"></div>
+							
+							<button type="submit" class="btn btn-primary btn-block" id="signup-btn" data-loading-text="가입 중">
+								가입하기
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+
+{% block container %}
+<div class="container-fit">
+	<div class="page-title">
+		<div class="container">
+			언어 변경
+		</div>
+	</div>
+</div>
+
+<div class="container">
+
+	<div class="text-center">
+		<img src="https://res.cloudinary.com/modupen/image/upload/v1440749448/flat%20ui%20icons/earth.svg" class="flat-icon" />
+	</div>
+
+	<form action="/user/language/update/" method="POST" id="update-language-form">
+		
+		<div class="description-message">
+			<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+			언어에 따라 볼 수 있는 이야기가 다릅니다
+		</div>
+		
+		{% csrf_token %}
+		
+		<div class="input-group">
+			<div class="input-group-addon">
+				<span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+			</div>
+			<select class="form-control" name="language">
+				{% with language=request.user.language %}
+				{% if language == "ko" %}
+				<option value="ko" selected>한글</option>
+				<option value="en">English</option>
+				<option value="jp">わご</option>
+				<option value="cn">汉语</option>
+				{% elif language == "en" %}
+				<option value="ko">한글</option>
+				<option value="en" selected>English</option>
+				<option value="jp">わご</option>
+				<option value="cn">汉语</option>
+				{% elif language == "jp" %}
+				<option value="ko">한글</option>
+				<option value="en">English</option>
+				<option value="jp" selected>わご</option>
+				<option value="cn">汉语</option>
+				{% else %}
+				<option value="ko">한글</option>
+				<option value="en">English</option>
+				<option value="jp">わご</option>
+				<option value="cn" selected>汉语</option>
+				{% endif %}
+				{% endwith %}
+			</select>
+		</div>
+		
+		<div class="alert alert-success text-center hidden" role="alert"></div>
+		<div class="alert alert-danger text-center hidden" role="alert"></div>
+		
+		<button type="submit" class="btn btn-primary btn-block" id="update-language-btn" data-loading-text="변경 중">
+			언어 변경하기
+		</button>
+	</form>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static 'js/accounts/update_user_language.js' %}"></script>
+{% endblock %}

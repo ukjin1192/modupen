@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block container %}
+<div class="container">
+	<div class="jumbotron text-center">
+		<h1>403 Error</h1>
+		<p>
+			금지된 접근입니다
+		</p>
+		<a href="/">
+			<button type="button" class="btn btn-primary btn-lg">
+				<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+				홈으로 이동
+			</button>
+		</a>     
+	</div>
+</div>                                          
+{% endblock %}

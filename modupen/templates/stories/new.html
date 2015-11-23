@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% load custom_filter %}
+
+{% block container %}
+<div class="container-fit">
+	<div class="page-title">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+				<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 page-title-with-btn">
+					새 이야기 쓰기
+				</div>
+				<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+					<div class="pull-right">
+						<a href="/">
+							<button type="button" class="btn btn-default">
+								취소
+							</button>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<input type="hidden" id="title-max-length" value="{{ 'TITLE_MAX_LENGTH'|get_settings_variable }}" />
+<input type="hidden" id="comment-max-length" value="{{ 'COMMENT_MAX_LENGTH'|get_settings_variable }}" />
+<input type="hidden" id="max-image-size" value="{{ 'MAX_IMAGE_SIZE'|get_settings_variable }}" />
+<input type="hidden" id="time-interval-for-new-story" value="{{ 'TIME_INTERVAL_FOR_NEW_STORY'|get_settings_variable }}" />
+<input type="hidden" id="max-tags-per-story" value="{{ 'MAX_TAGS_PER_STORY'|get_settings_variable }}" />
+<input type="hidden" id="tag-max-length" value="{{ 'TAG_MAX_LENGTH'|get_settings_variable }}" />
+
+<div class="container">
+
+	<div class="text-center">
+    <img src="https://res.cloudinary.com/modupen/image/upload/v1440749449/flat%20ui%20icons/pencils.svg" class="flat-icon" />
+  </div>
+
+	<form action="/story/create/" method="POST" enctype="multipart/form-data" id="create-story-form">
+		
+		{% csrf_token %}
+		
+		<div class="description-message">
+			<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+			장르, 주제 모두 자유에요
+		</div>
+		
+		<div class="input-group position-relative">
+			<div class="input-group-addon">
+				제목
+			</div>
+			<input type="text" name="title" class="form-control" id="title" maxlength="{{ 'TITLE_MAX_LENGTH'|get_settings_variable }}" autocomplete="off" placeholder="이야기의 제목" required />
+			<span class="character-count"><span id="title-character-count">0</span> / {{ 'TITLE_MAX_LENGTH'|get_settings_variable }}</span>
+		</div>
+		
+		<div class="form-group position-relative">
+			<textarea name="context" class="form-control" id="context" rows="4" maxlength="{{ 'COMMENT_MAX_LENGTH'|get_settings_variable }}" placeholder="시작글을 적어주세요" required></textarea>
+			<span class="character-count"><span id="context-character-count">0</span> / {{ 'COMMENT_MAX_LENGTH'|get_settings_variable }}</span>
+		</div>
+		
+		<input type="file" name="image" class="hidden" id="image" accept="image/*" />
+		
+		<div class="row hidden" id="image-sub-info">
+			<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8" id="image-reference-container">
+				<div class="input-group">
+					<div class="input-group-addon">
+						이미지 출처 URL
+					</div>
+					<input type="text" name="image-reference" class="form-control" id="image-reference" autocomplete="off" placeholder="출처가 있을 경우 입력하세요" />
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4" id="image-position-container">
+				<div class="input-group">
+					<div class="input-group-addon">
+						이미지 위치
+					</div>
+					<div class="form-control text-center">
+						<label class="radio-inline">
+							<input type="radio" name="image-position" value="up" checked /> 글 위
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="image-position" value="down" /> 글 아래
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+			
+		<div class="input-group">
+			<div class="input-group-addon">
+				태그
+			</div>
+			<input type="text" name="tags" class="form-control" id="tags" maxlength="{% widthratio 'TAG_MAX_LENGTH'|get_settings_variable 1 'MAX_TAGS_PER_STORY'|get_settings_variable %}" autocomplete="off" placeholder="콤마(,)로 구분 / 최대 {{ 'MAX_TAGS_PER_STORY'|get_settings_variable }}개 / 개당 {{ 'TAG_MAX_LENGTH'|get_settings_variable }}글자 이내" data-toggle="tooltip" data-placement="top" data-trigger="manual" />
+		</div>
+		
+		<div class="alert alert-danger text-center hidden" role="alert"></div>
+			
+		<button type="submit" class="btn btn-primary btn-lg btn-block" id="story-submit-btn" data-loading-text="쓰는 중">
+			이야기 시작하기
+		</button>
+			
+		<div class="description-message">
+			<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+			이야기를 시작하면 수정/삭제가 안되요 
+		</div>
+	</form>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static 'js/stories/new.js' %}"></script>
+{% endblock %}

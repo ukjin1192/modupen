@@ -1,0 +1,542 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% load custom_filter %}
+
+{% block container %}
+<input type="hidden" id="story-id" value="{{ story.id }}" />
+<input type="hidden" id="story-title" value="{{ story.title }}" />
+
+<input type="hidden" id="last-comment-order" value="{{ story.comments_count }}" />
+
+<input type="hidden" id="max-image-size" value="{{ 'MAX_IMAGE_SIZE'|get_settings_variable }}" />
+<input type="hidden" id="comment-max-length" value="{{ 'COMMENT_MAX_LENGTH'|get_settings_variable }}" />
+<input type="hidden" id="reply-max-length" value="{{ 'REPLY_MAX_LENGTH'|get_settings_variable }}" />
+
+<input type="hidden" id="comments-per-query" value="{{ 'COMMENTS_PER_QUERY'|get_settings_variable }}" />
+<input type="hidden" id="replies-per-query" value="{{ 'REPLIES_PER_QUERY'|get_settings_variable }}" />
+
+<input type="hidden" id="time-interval-for-new-comment" value="{{ 'TIME_INTERVAL_FOR_NEW_COMMENT'|get_settings_variable }}" />
+<input type="hidden" id="time-interval-for-new-reply" value="{{ 'TIME_INTERVAL_FOR_NEW_REPLY'|get_settings_variable }}" />
+<input type="hidden" id="time-interval-for-edit-vote" value="{{ 'TIME_INTERVAL_FOR_EDIT_VOTE'|get_settings_variable }}" />
+
+<input type="hidden" id="cost-to-vote-dislike" value="{{ 'COST_TO_VOTE_DISLIKE'|get_settings_variable }}" />
+<input type="hidden" id="min-dislike-count-to-hide" value="{{ 'MIN_DISLIKE_COUNT_TO_HIDE'|get_settings_variable }}" />
+<input type="hidden" id="min-comments-to-initiate-closing-vote" value="{{ 'MIN_COMMENTS_TO_INITIATE_CLOSING_VOTE'|get_settings_variable }}" />
+
+<input type="hidden" id="min-score-for-the-second-title" value="{{ 'MIN_SCORE_FOR_THE_SECOND_TITLE'|get_settings_variable }}" />
+<input type="hidden" id="min-score-for-the-third-title" value="{{ 'MIN_SCORE_FOR_THE_THIRD_TITLE'|get_settings_variable }}" />
+<input type="hidden" id="min-score-for-the-fourth-title" value="{{ 'MIN_SCORE_FOR_THE_FOURTH_TITLE'|get_settings_variable }}" />
+<input type="hidden" id="min-score-for-the-fifth-title" value="{{ 'MIN_SCORE_FOR_THE_FIFTH_TITLE'|get_settings_variable }}" />
+<input type="hidden" id="min-score-for-the-sixth-title" value="{{ 'MIN_SCORE_FOR_THE_SIXTH_TITLE'|get_settings_variable }}" />
+<input type="hidden" id="min-score-for-the-seventh-title" value="{{ 'MIN_SCORE_FOR_THE_SEVENTH_TITLE'|get_settings_variable }}" />
+
+<input type="hidden" id="firebase-repo-url" value="{{ 'FIREBASE_REPO_URL'|get_settings_variable }}" />
+
+<div class="container-fit">
+  <div class="page-title">
+    <div class="container">
+			{{ story.title }}
+    </div>
+		<div class="story-tags">
+			{% for tag in story.tags %}
+				<a href="/stories/search/tag/{{ tag }}/">#{{ tag }}</a>
+			{% endfor %}
+		</div>
+  </div>
+</div>
+
+<div class="container container-fit" id="comment-box">
+	<div class="vertical-line"></div>
+
+	<div class="hidden" id="load-past-comments">
+		<strong>이전 댓글</strong>을 보려면 클릭해주세요
+	</div>
+
+	<div id="comment-list"></div>
+
+	{% if story.state == 'processing' %}
+	<form action="/comment/create/" method="POST" enctype="multipart/form-data" id="create-comment-form">
+    
+    {% csrf_token %}
+    
+    <div id="new-comment-message">
+      이어질 내용을 <strong>댓글</strong>로 써보세요
+    </div>
+		
+		<input type="hidden" name="story-id" value="{{ story.id }}" />
+		
+		<div class="form-group position-relative">
+      <textarea name="context" class="form-control" rows="4" maxlength="{{ 'COMMENT_MAX_LENGTH'|get_settings_variable }}" placeholder="내용을 적어주세요" required></textarea>
+      <span class="character-count"><span class="context-character-count">0</span> / {{ 'COMMENT_MAX_LENGTH'|get_settings_variable }}</span>
+    </div>
+		
+		<input type="file" name="image" class="hidden" id="image" accept="image/*" />
+		
+		<div class="row hidden" id="image-sub-info">
+      <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8" id="image-reference-container">
+        <div class="input-group">
+          <div class="input-group-addon">
+            이미지 출처 URL
+          </div>
+          <input type="text" name="image-reference" class="form-control" id="image-reference" autocomplete="off" placeholder="출처가 있을 경우 입력하세요" />
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4" id="image-position-container">
+        <div class="input-group">
+          <div class="input-group-addon">
+            이미지 위치
+          </div>
+          <div class="form-control text-center">
+            <label class="radio-inline">
+              <input type="radio" name="image-position" value="up" checked /> 글 위
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="image-position" value="down" /> 글 아래
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+		
+    <div class="alert alert-danger text-center hidden" role="alert"></div>
+    
+    <button type="submit" class="btn btn-primary btn-block" id="comment-submit-btn" data-loading-text="쓰는 중">
+      댓글 쓰기
+    </button>
+	</form>
+	{% endif %}
+
+	<div id="share-story-block">
+		이야기를 <strong>공유</strong> 해보세요
+		<br/>
+		{# Facebook #}
+		<a href="https://www.facebook.com/sharer/sharer.php?u=https://modupen.com/story/{{ story.id }}/" target="_blank" class="social-media-icon">
+			<img src="https://res.cloudinary.com/modupen/image/upload/v1439919716/social%20media%20logo/facebook.svg"/>
+		</a>
+		{# Twitter #}
+		<a href="https://twitter.com/intent/tweet?text=[모두펜] {{ story.title }}&url=https://modupen.com/story/{{ story.id }}/" target="_blank" class="social-media-icon" id="twitter-share">
+			<img src="https://res.cloudinary.com/modupen/image/upload/v1439919716/social%20media%20logo/twitter.svg" />
+		</a>
+		{# Google+ #}
+		<a href="https://plus.google.com/share?url=https://modupen.com/story/{{ story.id }}/" target="_blank" class="social-media-icon">
+			<img src="https://res.cloudinary.com/modupen/image/upload/v1439919716/social%20media%20logo/google_plus.svg" />
+		</a>
+		{# LINE #}
+		<a href="line://msg/text/[모두펜] {{ story.title }} https://modupen.com/" class="social-media-icon" id="line-share">
+			<img src="https://res.cloudinary.com/modupen/image/upload/v1439919716/social%20media%20logo/line.svg" />
+		</a>
+		{# Kakao talk #}
+		<a href="javascript:;" class="social-media-icon" id="kakaotalk-share">
+			<img src="https://res.cloudinary.com/modupen/image/upload/v1439919716/social%20media%20logo/kakaotalk.svg" />
+		</a>
+	</div>
+
+	{% if favorite %}
+	<div id="add-story-to-favorite" data-favorite="true">
+		이미 <strong>즐겨찾기</strong>에 등록되어 있습니다
+	{% else %}
+	<div id="add-story-to-favorite" data-favorite="false">
+		<strong>즐겨찾기</strong>에 추가하고 싶다면 클릭해주세요
+	{% endif %}
+	</div>
+
+	<div id="guide-message-for-story-state">
+		{% if closing_vote_process %}
+		<div id="closing-vote">
+		{% else %}
+		<div class="hidden" id="closing-vote">
+		{% endif %}
+			<input type="hidden" id="closing-vote-id" value="{{ closing_vote.id }}" />
+			<input type="hidden" id="closing-vote-due" value="{{ closing_vote.due|date:'c' }}" />
+			<strong><span id="closing-vote-time-left"></span></strong>에 60% 이상이 동의했을 경우, 
+			<div class="visible-xs"></div>이야기는 완결됩니다
+			<div class="progress">
+				<div class="progress-bar progress-bar-info progress-bar-striped" id="agreement-ratio" style="width: {{ agreement_ratio }}%"></div>
+				<div class="progress-bar progress-bar-warning progress-bar-striped" id="disagreement-ratio" style="width: {{ disagreement_ratio }}%"></div>
+			</div>
+			<div class="row">
+				<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+					{% if closing_vote_record.agreement == True %}
+					<button type="button" class="btn btn-info btn-block active" id="agreement-btn">
+					{% else %}
+					<button type="button" class="btn btn-info btn-block" id="agreement-btn">
+					{% endif %}
+						<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+						완결 찬성 (<span id="agreement-count">{{ closing_vote.agreement_count }}</span>)
+					</button>
+				</div>
+				<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+					{% if closing_vote_record.agreement == False %}
+					<button type="button" class="btn btn-warning btn-block active" id="disagreement-btn">
+					{% else %}
+					<button type="button" class="btn btn-warning btn-block" id="disagreement-btn">
+					{% endif %}
+						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						완결 반대 (<span id="disagreement-count">{{ closing_vote.disagreement_count }}</span>)
+					</button>
+				</div>
+			</div>
+		</div>
+		
+		{% if closing_vote_process == False and story.state == 'processing' %}
+		<div id="guide-message-for-closing-story">
+			어떻게 이야기가 <strong>완결</strong>되는지 궁금하다면 클릭해보세요
+		</div>
+		
+		<div class="hidden" id="conditions-to-close-story">
+			<p>
+				1. {{ 'INACTIVATE_DAYS_TO_CLOSE_STORY'|get_settings_variable }}일 동안 새로 달린 댓글이 없을 경우
+			</p>
+			<p>
+				2. 투표를 해서 {{ 'MIN_AGREEMENT_RATIO_TO_CLOSE_STORY'|get_settings_variable }}% 이상이 동의할 경우
+			</p>
+			
+			<em>완결 투표는 {{ 'MIN_COMMENTS_TO_INITIATE_CLOSING_VOTE'|get_settings_variable }}개 이상의 댓글이 있을 때, 댓글을 쓴 적 있는 사람만이 개시할 수 있습니다</em>
+			
+			<button type="button" class="btn btn-primary btn-block hidden" id="initiate-closing-vote-btn">
+				완결 투표 개시하기
+			</button>
+		</div>
+		{% endif %}
+		
+		{% if story.state == 'closed' %}
+		<div>
+			<strong>완결</strong>된 이야기입니다
+		</div>
+		{% endif %}
+	</div>
+
+	<div id="story-recommendation-block">
+		<div class="recommendation-title">
+			<strong>이런 이야기는 어떠세요?</strong>
+		</div>
+		<div id="same-tag-stories">
+			<div class="space"></div>
+			<div class="recommendation-title">
+				<strong>같은 태그를 가진 이야기</strong>
+			</div>
+			{% for tag in story.tags %}
+				<a href="/stories/search/tag/{{ tag }}/">#{{ tag }}</a>
+			{% endfor %}
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4" id="recent-stories">
+				<div class="space"></div>
+				<div class="recommendation-title">
+					<strong>최근 시작된 이야기</strong>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4" id="popular-stories">
+				<div class="space"></div>
+				<div class="recommendation-title">
+					<strong>진행 중인 인기 이야기</strong>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4" id="closed-stories">
+				<div class="space"></div>
+				<div class="recommendation-title">
+					<strong>완결된 이야기 중 랜덤</strong>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{# Virtual DOM for comment element #}
+<div class="comment hidden" id="comment-dom-element" data-comment-id="">
+	<div class="upper-section">
+		<div class="head-section">
+			# <span class="comment-order"></span> / 
+			<span class="comments-count">{{ story.comments_count }}</span>
+			<span class="author-nickname"></span>
+			<span class="report-comment">신고</span>
+		</div>
+		
+		<div class="hidden-comment-message hidden">
+			비추천 비율이 높아 가려졌습니다
+			<br/>
+			펼쳐보시려면 여기를 클릭해주세요
+		</div>
+		
+		<div class="deleted-comment-message hidden">
+			삭제된 댓글입니다
+		</div>
+		
+		<div class="body-section">
+			<div class="image-container">
+				<img data-original="" />
+				<br/>
+				<a class="image-reference hidden" href="#" target="_blank">[이미지 출처]</a>
+			</div>
+			<div class="comment-context"></div>
+		</div>
+	</div>
+	
+	<div class="lower-section-collapsed container">
+		<div class="position-relative">
+			<div class="horizontal-line"></div>
+			<div class="icon-container">
+				<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+				<br/>
+				&nbsp;
+			</div>
+			<div class="icon-container">
+				<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+				<br/>
+				<span class="like-count"></span>:<span class="dislike-count"></span>
+			</div>
+			<div class="icon-container">
+				<span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+				<br/>
+				<span class="replies-count"></span>
+			</div>
+		</div>
+	</div>
+	
+	<div class="lower-section-uncollapsed container hidden">
+		<div class="row">
+			<div class="horizontal-line"></div>
+			<div class="col-xs-2 col-sm-1 col-md-1 col-lg-1">
+				<div class="icon-container">
+					<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+				</div>
+			</div>
+			<div class="col-xs-10 col-sm-11 col-md-11 col-lg-11">
+				<div class="profile-container">
+					<input type="hidden" class="author-id" value="" />
+					<input type="hidden" class="created-at" value="" />
+					<strong><span class="author-nickname"></span></strong> 
+					(필력 <span class="author-score"></span> / 
+					<span class="author-title"></span> / 
+					<span class="author-medal hidden">
+						<span class="glyphicon glyphicon-certificate gold-medal hidden" aria-hidden="true"></span>
+						<span class="glyphicon glyphicon-certificate silver-medal hidden" aria-hidden="true"></span>
+						<span class="glyphicon glyphicon-certificate bronze-medal hidden" aria-hidden="true"></span> / 
+					</span>
+					<span class="time-past-text"></span>)
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="horizontal-line"></div>
+			<div class="col-xs-2 col-sm-1 col-md-1 col-lg-1">
+				<div class="icon-container">
+					<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+				</div>
+			</div>
+			<div class="col-xs-10 col-sm-11 col-md-11 col-lg-11">
+				<div class="count-btn-group-container">
+					<button type="button" class="btn btn-info btn-sm btn-like">
+						<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+						추천 (<span class="like-count"></span>)
+					</button>
+					<button type="button" class="btn btn-warning btn-sm btn-dislike">
+						<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+						비추천 (<span class="dislike-count"></span>)
+					</button>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="horizontal-line"></div>
+			<div class="col-xs-2 col-sm-1 col-md-1 col-lg-1">
+				<div class="icon-container">
+					<span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+				</div>
+			</div>
+			<div class="col-xs-10 col-sm-11 col-md-11 col-lg-11">
+				<div class="reply-box">
+					<div class="replies-count-container">
+						<strong>대댓글 (<span class="replies-count"></span>)</strong>
+					</div>
+					
+					<form action="/reply/create/" method="POST" class="create-reply-form">
+						
+						{% csrf_token %}
+						
+						<input type="hidden" name="comment-id" value="" />
+						
+						<div class="alert alert-danger text-center hidden" role="alert"></div>
+						
+						<div class="row">
+							<div class="col-xs-10 col-sm-11 col-md-11 col-lg-11">
+								<div class="position-relative">
+									<textarea name="context" class="form-control" rows="2" maxlength="{{ 'REPLY_MAX_LENGTH'|get_settings_variable }}" placeholder="대댓글을 남겨보세요" required></textarea>
+									<span class="character-count"><span class="context-character-count">0</span> / {{ 'REPLY_MAX_LENGTH'|get_settings_variable }}</span>
+								</div>
+							</div>
+							<div class="col-xs-2 col-sm-1 col-md-1 col-lg-1">
+								<button type="submit" class="btn btn-primary btn-block reply-submit-btn" data-loading-text="쓰는<br/>중">
+									쓰기
+								</button>
+							</div>
+						</div>
+					</form>
+					
+					<div class="reply-list"></div>
+					
+					<button type="button" class="btn btn-default btn-block btn-sm load-past-replies-btn hidden">
+						<strong>이전 대댓글</strong> 더 보기
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{# Virtual DOM for reply element #}
+<div class="reply hidden" id="reply-dom-element" data-reply-id="">
+	<div class="head-section">
+		<input type="hidden" class="reply-order" value="" />
+		<input type="hidden" class="author-id" value="" />
+		<input type="hidden" class="created-at" value="" />
+		<strong><span class="author-nickname"></span></strong> 
+		(필력 <span class="author-score"></span> / 
+		<span class="author-title"></span> / 
+		<span class="author-medal hidden">
+			<span class="glyphicon glyphicon-certificate gold-medal hidden" aria-hidden="true"></span>
+			<span class="glyphicon glyphicon-certificate silver-medal hidden" aria-hidden="true"></span>
+			<span class="glyphicon glyphicon-certificate bronze-medal hidden" aria-hidden="true"></span> / 
+		</span>
+		<span class="time-past-text"></span>)
+		<span class="report-reply">신고</span>
+	</div>
+	
+	<div class="deleted-reply-message hidden">
+		삭제된 대댓글입니다
+	</div>
+
+	<div class="body-section"></div>
+</div>
+{% endblock %}
+
+{% block modal %}
+<div class="modal fade" id="modal-report-comment" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <img src="https://res.cloudinary.com/modupen/image/upload/w_30/v1439686690/basic%20component/close_icon.png" class="close-modal" data-dismiss="modal" aria-label="Close" />
+    
+      <div class="modal-header">
+				댓글 신고
+      </div>
+        
+      <div class="modal-body">
+				<form action="/comment/report/" method="POST" id="report-comment-form">
+					
+					{% csrf_token %}
+					
+					<input type="hidden" class="comment-id" value="" />
+					
+					<div class="input-group">
+						<div class="input-group-addon">
+							<span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+							사유
+						</div>
+						<select class="form-control" name="category">
+							<option value="extraneous" selected>내용과 관련 없음</option>
+							<option value="promotional">홍보성</option>
+							<option value="lustful">음란성</option>
+							<option value="expletive">지나친 비속어 및 폭언 사용</option>
+							<option value="copyright">저작권 침해</option>
+							<option value="defamation">명예훼손</option>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<textarea name="reason" class="form-control" rows="3" placeholder="세부 사유을 적어주세요"></textarea>
+					</div>
+					
+					<div class="alert alert-success text-center hidden" role="alert"></div>
+					<div class="alert alert-danger text-center hidden" role="alert"></div>
+					
+					<div class="description-message">
+						<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+						정당한 신고일 경우, 필력 {{ 'SCORE_FOR_INFORMANT'|get_settings_variable }}점을 보상해드립니다
+					</div>
+					
+					<div class="row">
+						<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+							<button type="submit" class="btn btn-primary btn-block" id="report-comment-btn" data-loading-text="신고 중">
+								신고하기
+							</button>
+						</div>
+						<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+							<button type="button" class="btn btn-default btn-block" data-dismiss="modal">
+								닫기
+							</button>
+						</div>
+					</div>
+				</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-report-reply" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <img src="https://res.cloudinary.com/modupen/image/upload/w_30/v1439686690/basic%20component/close_icon.png" class="close-modal" data-dismiss="modal" aria-label="Close" />
+    
+      <div class="modal-header">
+				대댓글 신고
+      </div>
+        
+      <div class="modal-body">
+				<form action="/reply/report/" method="POST" id="report-reply-form">
+					
+					{% csrf_token %}
+					
+					<input type="hidden" class="reply-id" value="" />
+					
+					<div class="input-group">
+						<div class="input-group-addon">
+							<span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+							사유
+						</div>
+						<select class="form-control" name="category">
+							<option value="promotional" selected>홍보성</option>
+							<option value="lustful">음란성</option>
+							<option value="expletive">지나친 비속어 및 폭언 사용</option>
+							<option value="copyright">저작권 침해</option>
+							<option value="defamation">명예훼손</option>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<textarea name="reason" class="form-control" rows="4" placeholder="세부 사유을 적어주세요"></textarea>
+					</div>
+					
+					<div class="alert alert-success text-center hidden" role="alert"></div>
+					<div class="alert alert-danger text-center hidden" role="alert"></div>
+					
+					<div class="description-message">
+						<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+						정당한 신고일 경우, 필력 {{ 'SCORE_FOR_INFORMANT'|get_settings_variable }}점을 보상해드립니다
+					</div>
+					
+					<div class="row">
+						<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+							<button type="submit" class="btn btn-primary btn-block" id="report-reply-btn" data-loading-text="신고 중">
+								신고하기
+							</button>
+						</div>
+						<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+							<button type="button" class="btn btn-default btn-block" data-dismiss="modal">
+								닫기
+							</button>
+						</div>
+					</div>
+				</form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static 'js/stories/main.js' %}"></script>
+{% endblock %}

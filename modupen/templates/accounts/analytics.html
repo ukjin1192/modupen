@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load custom_filter %}
+
+{% block container %}
+<div class="container-fit">
+	<div class="page-title">
+		<div class="container">
+			나의 필력 확인하기
+		</div>
+	</div>
+</div>
+
+<div class="container">
+
+	<div class="text-center">
+		<img src="https://res.cloudinary.com/modupen/image/upload/v1440749448/flat%20ui%20icons/graph.svg" class="flat-icon" />
+	</div>
+
+	<table class="table table-striped">
+		<tbody class="text-center">
+			<tr>
+				<td><strong>획득한 필력</strong></td>
+				<td><strong>현재 칭호</strong></td>
+				<td><strong>전체 순위</strong></td>
+			</tr>
+			<tr>
+				{% with score=request.user.score %}
+				<td>{{ score }}</td>
+				{% if score >= 'MIN_SCORE_FOR_THE_SEVENTH_TITLE'|get_settings_variable %}
+				<td>거장</td>
+				{% elif score >= 'MIN_SCORE_FOR_THE_SIXTH_TITLE'|get_settings_variable %}
+				<td>명필가</td>
+				{% elif score >= 'MIN_SCORE_FOR_THE_FIFTH_TITLE'|get_settings_variable %}
+				<td>달필가</td>
+				{% elif score >= 'MIN_SCORE_FOR_THE_FOURTH_TITLE'|get_settings_variable %}
+				<td>작가</td>
+				{% elif score >= 'MIN_SCORE_FOR_THE_THIRD_TITLE'|get_settings_variable %}
+				<td>논객</td>
+				{% elif score >= 'MIN_SCORE_FOR_THE_SECOND_TITLE'|get_settings_variable %}
+				<td>문하생</td>
+				{% else %}
+				<td>초심자</td>
+				{% endif %}
+				{% endwith %}
+				<td>{{ ranking }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="alert alert-info text-center" role="alert">
+		<div class="container container-fit">
+			<div class="cursor-pointer" data-toggle="collapse" data-target="#how-to-get-title" aria-expanded="false" aria-controls="#how-to-get-title">
+				클릭해서 어떻게 <strong>칭호</strong>가 주어지는지 확인해보세요!
+			</div>
+			<div class="collapse" id="how-to-get-title">
+				<br/>
+				<p>
+					<strong>초심자</strong> : {{ 'MIN_SCORE_FOR_THE_FIRST_TITLE'|get_settings_variable }} ~ 
+					{{ 'MIN_SCORE_FOR_THE_SECOND_TITLE'|get_settings_variable|add:"-1" }} 필력
+				</p>
+				<p>
+					<strong>문하생</strong> : {{ 'MIN_SCORE_FOR_THE_SECOND_TITLE'|get_settings_variable }} ~ 
+					{{ 'MIN_SCORE_FOR_THE_THIRD_TITLE'|get_settings_variable|add:"-1" }} 필력
+				</p>
+				<p>
+					<strong>논객</strong> : {{ 'MIN_SCORE_FOR_THE_THIRD_TITLE'|get_settings_variable }} ~ 
+					{{ 'MIN_SCORE_FOR_THE_FOURTH_TITLE'|get_settings_variable|add:"-1" }} 필력
+				</p>
+				<p>
+					<strong>작가</strong> : {{ 'MIN_SCORE_FOR_THE_FOURTH_TITLE'|get_settings_variable }} ~ 
+					{{ 'MIN_SCORE_FOR_THE_FIFTH_TITLE'|get_settings_variable|add:"-1" }} 필력
+				</p>
+				<p>
+					<strong>달필가</strong> : {{ 'MIN_SCORE_FOR_THE_FIFTH_TITLE'|get_settings_variable }} ~ 
+					{{ 'MIN_SCORE_FOR_THE_SIXTH_TITLE'|get_settings_variable|add:"-1" }} 필력
+				</p>
+				<p>
+					<strong>명필가</strong> : {{ 'MIN_SCORE_FOR_THE_SIXTH_TITLE'|get_settings_variable }} ~ 
+					{{ 'MIN_SCORE_FOR_THE_SEVENTH_TITLE'|get_settings_variable|add:"-1" }} 필력
+				</p>
+				<p>
+					<strong>거장</strong> : {{ 'MIN_SCORE_FOR_THE_SEVENTH_TITLE'|get_settings_variable }} ~ 필력
+				</p>
+				<br/>
+				<p>
+					<em>Beta 기간이 끝나면 필력에 따른 호칭이 약간 조정될 수 있습니다</em>
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="space"></div>
+
+	<table class="table table-striped">
+		<tbody class="text-center">
+			<tr>
+				<td>
+					<span class="glyphicon glyphicon-certificate gold-medal" aria-hidden="true"></span>
+					<div class="visible-xs"></div>
+					<strong>나의 금메달</strong> 
+				</td>
+				<td>
+					<span class="glyphicon glyphicon-certificate silver-medal" aria-hidden="true"></span>
+					<div class="visible-xs"></div>
+					<strong>나의 은메달</strong> 
+				</td>
+				<td>
+					<span class="glyphicon glyphicon-certificate bronze-medal" aria-hidden="true"></span>
+					<div class="visible-xs"></div>
+					<strong>나의 동메달</strong> 
+				</td>
+			</tr>
+			<tr>
+				<td>{{ request.user.gold_medal }}</td>
+				<td>{{ request.user.silver_medal }}</td>
+				<td>{{ request.user.bronze_medal }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="alert alert-info text-center" role="alert">
+		<div class="container container-fit">
+			<div class="cursor-pointer" data-toggle="collapse" data-target="#how-to-get-medal" aria-expanded="false" aria-controls="#how-to-get-medal">
+				클릭해서 어떻게 <strong>메달</strong>을 얻는지 확인해보세요!
+			</div>
+			<div class="collapse" id="how-to-get-medal">
+				<br/>
+				<p>
+					<strong>금메달</strong> : 내 댓글이 추천 {{ 'MIN_LIKE_FOR_GOLD_MEDAL'|get_settings_variable }}개 이상을 받았을 때
+				</p>
+				<p>
+					<strong>은메달</strong> : 내 댓글이 추천 {{ 'MIN_LIKE_FOR_SILVER_MEDAL'|get_settings_variable }}개 이상을 받았을 때
+				</p>
+				<p>
+					<strong>동메달</strong> : 내 댓글이 추천 {{ 'MIN_LIKE_FOR_BRONZE_MEDAL'|get_settings_variable }}개 이상을 받았을 때
+				</p>
+				<br/>
+				<p>
+					<em>Beta 기간이 끝나면 메달 획득 기준이 약간 조정될 수 있습니다</em>
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="space"></div>
+
+	<table class="table table-striped">
+		<tbody class="text-center">
+			<tr>
+				<td><strong>목록</strong></td>
+				<td><strong>갯수</strong></td>
+				<td><strong>링크</strong></td>
+			</tr>
+			<tr>
+				<td>참여한 이야기</td>
+				<td>{{ num_of_stories_as_contributor }}</td>
+				<td>
+					<a href="/user/stories/">
+						<button type="button" class="btn btn-primary btn-sm">
+							모두 보기
+						</button>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>작성한 댓글</td>
+				<td>{{ num_of_comments_as_author }}</td>
+				<td>
+					<a href="/user/comments/">
+						<button type="button" class="btn btn-primary btn-sm">
+							모두 보기
+						</button>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>작성한 대댓글</td>
+				<td>{{ num_of_replies_as_author }}</td>
+				<td>
+					<a href="/user/replies/">
+						<button type="button" class="btn btn-primary btn-sm">
+							모두 보기
+						</button>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>좋아요 합계</td>
+				<td>{{ total_likes_for_comments }}</td>
+				<td>-</td>
+			</tr>
+			<tr>
+				<td>싫어요 합계</td>
+				<td>{{ total_dislikes_for_comments }}</td>
+				<td>-</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="alert alert-info text-center" role="alert">
+		<div class="container container-fit">
+			<div class="cursor-pointer" data-toggle="collapse" data-target="#how-to-get-score" aria-expanded="false" aria-controls="#how-to-get-score">
+				클릭해서 어떻게 <strong>필력</strong>을 쌓는지 확인해보세요!
+			</div>
+			<div class="collapse" id="how-to-get-score">
+				<br/>
+				<p>
+					이야기 또는 댓글을 작성할 때 : <strong>+{{ 'SCORE_FOR_NEW_COMMENT'|get_settings_variable }}</strong>
+				</p>
+				<p>
+					다른 사람이 나의 댓글을 추천할 때 : <strong>+{{ 'SCORE_FOR_LIKE_COMMENT'|get_settings_variable }}</strong>
+				</p>
+				<p>
+					다른 사람이 나의 댓글을 비추천할 때 : <strong>{{ 'SCORE_FOR_DISLIKE_COMMENT'|get_settings_variable }}</strong>
+				</p>
+				<p>
+					대댓글을 작성할 때 : <strong>+{{ 'SCORE_FOR_NEW_REPLY'|get_settings_variable }}</strong>
+				</p>
+				<p>
+					다른 사람의 댓글을 비추천할 때 : <strong>-{{ 'COST_TO_VOTE_DISLIKE'|get_settings_variable }}</strong>
+				</p>
+				<p>
+					댓글/대댓글 신고가 인정됐을 때 : <strong>+{{ 'SCORE_FOR_INFORMANT'|get_settings_variable }}</strong>
+				</p>
+				<br/>
+				<p>
+					<em>나의 점수가 최소 {{ 'COST_TO_VOTE_DISLIKE'|get_settings_variable }}점이 안 되면 다른 사람의 댓글을 비추천할 수 없습니다</em>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

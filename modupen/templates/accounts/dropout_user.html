@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+
+{% block container %}
+<div class="container-fit">
+	<div class="page-title">
+		<div class="container">
+			회원 탈퇴
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	
+	<div class="text-center">
+		<img src="https://res.cloudinary.com/modupen/image/upload/v1440749450/flat%20ui%20icons/trash.svg" class="flat-icon" />
+	</div>
+
+	{% if request.user.login_with_oauth %}
+	<div class="description-message">
+		<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+		Facebook 으로 가입하셨군요
+	</div>
+
+	<div class="alert alert-info text-center" role="alert">
+		<p>
+			아래 과정을 통해 회원 탈퇴를 하실 수 있습니다.
+		</p>
+		<p>
+			Facebook 접속 &gt; 설정 &gt; 앱 &gt; 모두펜 삭제
+		</p>
+	</div>
+	{% else %}
+	<form action="/user/delete/" method="POST" id="dropout-form">
+		
+		<div class="description-message">
+			<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+			작성한 이야기와 댓글들은 그대로 남습니다.
+		</div>
+		
+		{% csrf_token %}
+		
+		<div class="input-group">
+			<div class="input-group-addon">
+				<span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+			</div>
+			<input type="password" name="password" class="form-control" placeholder="비밀번호 확인" required />
+		</div>
+		
+		<div class="alert alert-danger text-center hidden" role="alert"></div>
+		
+		<button type="submit" class="btn btn-primary btn-block" id="dropout-btn" data-loading-text="탈퇴 신청 중">
+			회원 탈퇴하기
+		</button>
+	</form>
+	{% endif %}
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static 'js/accounts/dropout_user.js' %}"></script>
+{% endblock %}

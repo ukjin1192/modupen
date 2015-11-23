@@ -1,0 +1,91 @@
+{% load i18n %}
+
+<aside id="sidebar" data-toggle="tooltip" data-placement="right" data-trigger="manual" title="오른쪽 빈공간을 눌러 접을 수 있어요">
+	<section id="sidebar-upper-section">
+		<a href="/" title="홈으로 이동">
+			<div id="sidebar-service-name">
+				모두펜
+			</div>
+			<div>
+				모두 함께 만드는 이야기
+			</div>
+		</a>
+		<br/>
+		{% if request.user.is_authenticated %}
+		<div class="login-required">
+		{% else %}
+		<div class="login-required hidden">
+		{% endif %}
+			환영합니다, <span id="sidebar-nickname">{{ request.user.nickname }}</span>님
+		</div>
+		{% if not request.user.is_authenticated %}
+		<div id="sidebar-btn-group">
+			<button type="button" class="btn btn-primary" id="login-modal-btn">
+				로그인
+			</button>
+			<button type="button" class="btn btn-primary" id="signup-modal-btn">
+				가입하기
+			</button>
+		</div>
+		{% endif %}
+	</section>
+	<section id="sidebar-lower-section">
+		<a class="sidebar-menu" href="/story/read/">
+			최근 본 이야기
+		</a>
+		{% if request.user.is_authenticated %}
+		<div class="login-required">
+		{% else %}
+		<div class="login-required hidden">
+		{% endif %}
+			<a class="sidebar-menu" href="/story/favorite/">
+				즐겨찾기 이야기
+			</a>
+			<a class="sidebar-menu" href="/notifications/">
+				업데이트 알림
+				{% if request.user.allow_notification == True and request.user.new_notification_count > 0 %}
+				<span class="label label-danger new-notification-count">{{ request.user.new_notification_count }}</span>
+				{% else %}
+				<span class="label label-danger new-notification-count hidden"></span>
+				{% endif %}
+			</a>
+			<a class="sidebar-menu" href="/analytics/">
+				나의 필력 확인하기
+			</a>
+			<div class="sidebar-menu cursor-pointer" data-toggle="collapse" href="#accounts-page-list">
+				프로필 관리
+				<span class="glyphicon glyphicon-chevron-down" id="accounts-page-chevron" aria-hidden="true"></span>
+			</div>
+			<div class="collapse" id="accounts-page-list">
+				<ul class="list-unstyled">
+					<li><a href="/user/nickname/">필명 변경</a></li>
+					{% if not request.user.login_with_oauth %}
+					<li class="sidebar-oauth-hidden"><a href="/user/email/">메일 주소 변경</a></li>
+					<li class="sidebar-oauth-hidden"><a href="/user/password/">비밀번호 변경</a></li>
+					{% endif %}
+					{% comment %}
+					<li><a href="/user/language/">언어 변경</a></li>
+					{% endcomment %}
+					<li><a href="/user/dropout/">회원 탈퇴</a></li>
+					{% if request.user.login_with_oauth %}
+					<li><a href="/logout/" onclick="FB.logout();">로그아웃</a></li>
+					{% else %}
+					<li><a href="/logout/">로그아웃</a></li>
+					{% endif %}
+				</ul>
+			</div>
+		</div>
+		<div class="sidebar-menu cursor-pointer" data-toggle="collapse" href="#service-page-list">
+			서비스 관련
+			<span class="glyphicon glyphicon-chevron-down" id="service-page-chevron" aria-hidden="true"></span>
+		</div>
+		<div class="collapse" id="service-page-list">
+			<ul class="list-unstyled">
+				<li><a href="/terms/">약관 및 정책</a></li>
+				<li><a href="/voc/">건의하기</a></li>
+			</ul>
+		</div>
+	</section>
+</aside>
+
+<div class="hidden cursor-pointer" id="transparent-background"></div>

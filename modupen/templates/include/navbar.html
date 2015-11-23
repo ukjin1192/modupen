@@ -1,0 +1,37 @@
+{% load i18n %}
+{% load custom_filter %}
+
+<div class="container-fit">
+	<nav id="navbar">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+					<div class="pull-left" title="메뉴">
+						<span class="glyphicon glyphicon-menu-hamburger" id="toggle-sidebar" aria-hidden="true"></span>
+						{% if request.user.allow_notification == True and request.user.new_notification_count > 0 %}
+						<span class="label label-danger new-notification-count">{{ request.user.new_notification_count }}</span>
+						{% else %}
+						<span class="label label-danger hidden new-notification-count"></span>
+						{% endif %}
+					</div>
+				</div>
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+					<a href="/" id="navbar-service-name" title="홈으로 이동">
+						모두펜
+						<span class="label label-primary hidden" id="beta-logo">Beta</span>
+					</a>
+				</div>
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+					<a href="/story/new/" class="pull-right" title="새로운 이야기 쓰기">
+						<span class="glyphicon glyphicon-edit" id="new-story" aria-hidden="true"></span>
+					</a>
+				</div>
+			</div>
+			
+			<form action="/stories/search/" method="GET" id="story-search-form">
+				<input type="search" class="text-center" maxlength="{{ 'TITLE_MAX_LENGTH'|get_settings_variable }}" autocomplete="off" placeholder="제목으로 이야기 검색 (# 붙이면 태그로 검색)" required />
+				<span class="glyphicon glyphicon-search" id="story-search-submit-btn" aria-hidden="true"></span>
+			</form>
+		</div>
+	</nav>
+</div>

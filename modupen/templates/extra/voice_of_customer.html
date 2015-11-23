@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+
+{% block container %}
+<div class="container-fit">
+	<div class="page-title">
+		<div class="container">
+			건의하기
+		</div>
+	</div>
+</div>
+
+<div class="container">
+
+	<div class="text-center">
+		<img src="https://res.cloudinary.com/modupen/image/upload/v1440749450/flat%20ui%20icons/support.svg" class="flat-icon" />
+	</div>
+
+	<form action="/voc/create/" method="POST" id="voc-form">
+		
+		<div class="description-message">
+			<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+			함께 만드는 서비스가 되겠습니다
+		</div>
+		
+		{% csrf_token %}
+		
+		{% if not request.user.is_authenticated %}
+		<div class="input-group">
+			<div class="input-group-addon">
+				<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+			</div>
+			<input type="email" name="email" class="form-control" placeholder="연락 받으실 이메일 주소" required />
+		</div>
+		{% endif %}
+		
+		<div class="input-group">
+			<div class="input-group-addon">
+				<span class="glyphicon glyphicon-sunglasses" aria-hidden="true"></span>
+			</div>
+			<select class="form-control" name="language">
+				<option value="default" selected>지금 기분이 어떠신가요?</option>
+				<option value="expected">기대돼요</option>
+				<option value="curious">궁금해요</option>
+				<option value="apprehensive">걱정돼요</option>
+				<option value="angry">화나요</option>
+			</select>
+		</div>
+		
+		<div class="form-group">
+			<textarea name="context" class="form-control" id="context" rows="10" placeholder="건의하실 내용을 적어주세요. 
+
+버그 신고, 기능 문의 등 모두 환영입니다." required></textarea>
+		</div>
+		
+		<div class="alert alert-success text-center hidden" role="alert"></div>
+		<div class="alert alert-danger text-center hidden" role="alert"></div>
+		
+		<button type="submit" class="btn btn-primary btn-block" id="submit-voc-btn" data-loading-text="건의 중">
+			건의하기
+		</button>
+	</form>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static 'js/extra/voice_of_customer.js' %}"></script>
+{% endblock %}

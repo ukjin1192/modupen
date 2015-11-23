@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+
+{% block container %}
+<div class="container-fit">
+	<div class="page-title">
+		<div class="container">
+			메일 주소 변경
+		</div>
+	</div>
+</div>
+
+<div class="container">
+
+	<div class="text-center">
+		<img src="https://res.cloudinary.com/modupen/image/upload/v1440749449/flat%20ui%20icons/mail.svg" class="flat-icon" />
+	</div>
+
+	<form action="/user/email/update/" method="POST" id="update-email-form">
+		
+		<div class="description-message">
+			<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+			로그인에 사용됩니다
+			<br/>
+			비밀번호 분실 시 임시 비밀번호를 보낼 곳입니다
+		</div>
+		
+		{% csrf_token %}
+		
+		<div class="input-group">
+			<div class="input-group-addon">
+				<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+			</div>
+			<input type="email" name="email" class="form-control" value="{{ request.user.email }}" placeholder="변경할 이메일 주소" required />
+		</div>
+		
+		<div class="alert alert-success text-center hidden" role="alert"></div>
+		<div class="alert alert-danger text-center hidden" role="alert"></div>
+		
+		<button type="submit" class="btn btn-primary btn-block" id="update-email-btn" data-loading-text="변경 중">
+			메일 주소 변경하기
+		</button>
+	</form>
+
+	{% if request.user.email_verified %}
+	<div class="alert alert-success text-center" id="email-verification-message" role="alert">
+		인증된 메일 주소입니다
+	</div>
+	{% endif %}
+
+	<form action="/user/email/verification/" method="POST" {% if request.user.email_verified %}class="hidden" {% endif %}id="verify-email-form">
+		
+		{% csrf_token %}
+		
+		<div class="alert alert-success text-center hidden" role="alert"></div>
+		<div class="alert alert-warning" role="alert">
+			<p class="text-center">
+				<strong>인증된 메일 주소가 아닙니다</strong>
+				<br/>
+				아래는 메일 주소 인증 후에 가능한 것들입니다
+			</p>
+			<p>
+				- Facebook 같은 소셜미디어 계정으로 로그인을 하게 될 경우, 기존 계정과 연결하기
+				<br/>
+				- {{ request.user.nickname }}님이 참여한 이야기가 화제일 때 알림 받기
+				<br/>
+				- 재밌는 이야기를 주기적으로 추천 받기
+			</p>
+		</div>
+		
+		<button type="submit" class="btn btn-default btn-block" id="verify-email-btn" data-loading-text="변경 중">
+			메일 주소 인증하기
+		</button>
+	</form>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static 'js/accounts/update_user_email.js' %}"></script>
+{% endblock %}

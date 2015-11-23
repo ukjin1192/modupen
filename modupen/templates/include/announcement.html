@@ -1,0 +1,24 @@
+{% load i18n %}
+
+{# Set data-announcement-id value as '0' to disable announcement #}
+<div class="alert alert-info alert-dismissible text-center hidden" id="announcement" data-announcement-id="0" role="alert">
+	<div class="container container-fit">
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+		</button>      
+		<div id="open-announcement-message" data-toggle="collapse" data-target="#announcement-contents" aria-expanded="false" aria-controls="#announcement-contents">
+      클릭해서 <strong>새로운 공지</strong>를 확인해보세요!
+    </div>
+    <div class="collapse" id="announcement-contents">
+      <p class="announcement-title">
+        <strong>공지 제목</strong>
+      </p>
+      <p>
+				공지 내용
+      </p>
+      <p id="close-announcement-message">
+        - 우측 위 'X' 를 눌러서 다시 보지 않을 수 있습니다 -
+      </p>
+    </div>
+	</div>           
+</div>

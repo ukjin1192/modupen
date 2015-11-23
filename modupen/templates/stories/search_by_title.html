@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+
+{% block container %}
+<input type="hidden" id="pagination" value="1" />
+<input type="hidden" id="no-more-story" value="false" />
+
+<div class="container-fit">
+  <div class="page-title">
+    <div class="container">
+			제목으로 이야기 검색
+    </div>
+  </div>
+</div>
+
+<div class="container">
+	<div class="description-message">
+		<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+		이야기 생성일이 최근인 것부터 보여집니다
+	</div>
+</div>
+
+<div class="container container-fit" id="story-list"></div>
+
+<div class="container text-center hidden" id="no-story-at-all">
+	<div class="space"></div>
+	<img src="https://res.cloudinary.com/modupen/image/upload/v1440749449/flat%20ui%20icons/pencil.svg" />
+	<div class="space"></div>
+	<p>
+		이야기가 없습니다
+	</p>
+</div>
+
+{# Virtual DOM for story element #}
+<div class="story col-xs-12 col-sm-6 col-md-6 col-lg-4 hidden" id="story-dom-element" data-story-id="">
+	<a href="">
+		<div class="position-relative fake-block">
+			<div class="alpha-blending"></div>
+			<img data-original="" onLoad="showImage($(this));" />
+			<div class="caption-block-container">
+				<div class="caption-block">
+					<div class="caption-title"></div>
+					<div class="caption-contributors"></div>
+					<div class="caption-tags"></div>
+				</div>
+			</div>
+		</div>
+			
+		<div class="numeric-info-bar">
+			조회 <span class="hits"></span>&emsp;
+			즐겨찾기 <span class="favorites-count"></span>&emsp;
+			댓글 <span class="comments-count"></span>
+		</div>
+	</a>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static 'js/stories/search_by_title.js' %}"></script>
+{% endblock %}

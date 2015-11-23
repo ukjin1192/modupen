@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% load custom_filter %}
+
+{% block container %}
+<input type="hidden" id="pagination" value="1" />
+<input type="hidden" id="no-more-story" value="false" />
+<input type="hidden" id="stories-per-query" value="{{ 'STORIES_PER_QUERY'|get_settings_variable }}" />
+
+<div class="container-fit">
+  <div class="page-title">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 page-title-with-btn">
+					최근 본 이야기
+        </div>
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+          <div class="pull-right">
+						<button type="button" class="btn btn-default" id="toggle-edit-mode-btn" data-edit-mode="false">
+							편집
+						</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="description-message">
+    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+		현재 사용하고 있는 기기의 브라우저에서 본 이야기들만 있습니다
+  </div>
+</div>
+
+<div class="container container-fit" id="story-list"></div>
+
+<div class="container text-center hidden" id="no-story-at-all">
+	<div class="space"></div>
+	<img src="https://res.cloudinary.com/modupen/image/upload/v1440749449/flat%20ui%20icons/pencil.svg" />
+	<div class="space"></div>
+	<p>
+		이야기가 없습니다
+	</p>
+</div>
+
+{# Bottom space for delete whole story button #}
+<div class="hidden" id="bottom-space"></div>
+
+<button type="button" class="btn btn-danger btn-block btn-lg hidden" id="remove-whole-story-btn" data-confirm="false">
+	전체 삭제
+</button>
+
+{# Virtual DOM for story element #}
+<div class="story col-xs-12 col-sm-6 col-md-6 col-lg-4 hidden" id="story-dom-element" data-story-id="">
+	<a href="">
+		<div class="position-relative fake-block">
+			<div class="alpha-blending"></div>
+			<img data-original="" onLoad="showImage($(this));" />
+			<div class="caption-block-container">
+				<div class="caption-block">
+					<div class="caption-title"></div>
+					<div class="caption-contributors"></div>
+					<div class="caption-tags"></div>
+				</div>
+			</div>
+		</div>
+			
+		<div class="numeric-info-bar">
+			조회 <span class="hits"></span>&emsp;
+			즐겨찾기 <span class="favorites-count"></span>&emsp;
+			댓글 <span class="comments-count"></span>
+		</div>
+	</a>
+	<button type="button" class="btn btn-danger btn-block remove-story-btn hidden">
+		삭제
+	</button>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static 'js/stories/read.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block container %}
+<div class="container-fit">
+	<div class="page-title">
+		<div class="container">
+			메일 주소 인증
+		</div>
+	</div>
+</div>
+
+<div class="container">
+
+	<div class="text-center">
+		<img src="https://res.cloudinary.com/modupen/image/upload/v1440749449/flat%20ui%20icons/mail.svg" class="flat-icon" />
+	</div>
+
+	{% if succeed %}
+	<div class="alert alert-success text-center" role="alert">
+		{% if request.user.is_authenticated %}
+		<strong>{{ request.user.nickname }} 님의 메일 주소가 인증됐습니다!</strong>
+		{% else %}
+		<strong>{{ user.nickname }} 님의 메일 주소가 인증됐습니다!</strong>
+		{% endif %}
+	</div>
+
+	<a href="/">
+		<button type="submit" class="btn btn-primary btn-block">
+			홈으로 이동
+		</button>
+	</a>
+	{% else %}
+	<div class="alert alert-danger text-center" role="alert">
+		<p>
+			<strong>URL 유효시간이 지났습니다</strong>
+			<br/>
+			(유효시간 : 24시간)
+			<br/>
+		</p>
+	</div>
+
+	{% if not request.user.login_with_oauth %}
+	<a href="/user/email/">
+		<button type="submit" class="btn btn-primary btn-block">
+			메일 주소 인증 페이지로 이동
+		</button>
+	</a>
+	{% endif %}
+	{% endif %}
+</div>
+{% endblock %}

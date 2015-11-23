@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% load custom_filter %}
+
+{% block container %}
+<div class="container-fit">
+	<div class="page-title">
+		<div class="container">
+			필명 변경
+		</div>
+	</div>
+</div>
+
+<div class="container">
+
+	<div class="text-center">
+		<img src="https://res.cloudinary.com/modupen/image/upload/v1440749449/flat%20ui%20icons/shirt.svg" class="flat-icon" />
+	</div>
+
+	<form action="/user/nickname/update/" method="POST" id="update-nickname-form">
+		
+		<div class="description-message">
+			<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+			다른 사용자들에게 보여지는 필명입니다
+		</div>
+		
+		{% csrf_token %}
+		
+		<div class="input-group">
+			<div class="input-group-addon">
+				<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+			</div>
+			<input type="text" name="nickname" maxlength="{{ 'NICKNAME_MAX_LENGTH'|get_settings_variable }}" class="form-control" value="{{ request.user.nickname }}" placeholder="사용할 필명 (최대 {{ 'NICKNAME_MAX_LENGTH'|get_settings_variable }}자)" required />
+		</div>
+		
+		<div class="alert alert-success text-center hidden" role="alert"></div>
+		<div class="alert alert-danger text-center hidden" role="alert"></div>
+		
+		<button type="submit" class="btn btn-primary btn-block" id="update-nickname-btn" data-loading-text="변경 중">
+			필명 변경하기
+		</button>
+	</form>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static 'js/accounts/update_user_nickname.js' %}"></script>
+{% endblock %}

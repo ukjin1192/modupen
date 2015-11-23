@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+{% load custom_filter %}
+
+{% block container %}
+<input type="hidden" id="pagination" value="1" />
+<input type="hidden" id="no-more-notification" value="false" />
+<input type="hidden" id="notification-preview-max-length" value="{{ 'NOTIFICATION_PREVIEW_MAX_LENGTH'|get_settings_variable }}" />
+
+<div class="container-fit">
+  <div class="page-title">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 page-title-with-btn">
+					업데이트 알림
+					{% if new_notification_count > 0 %}
+					<span class="label label-danger">{{ new_notification_count }}</span>
+					{% endif %}
+        </div>
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+          <div class="pull-right">
+						{% if request.user.allow_notification %}
+						<input type="checkbox" class="hidden" id="toggle-notification-setting" data-toggle="toggle" checked />
+						{% else %}
+						<input type="checkbox" class="hidden" id="toggle-notification-setting" data-toggle="toggle" />
+						{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="description-message">
+    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+		클릭해서 해당 컨텐츠로 이동할 수 있습니다
+  </div>
+</div>
+
+<div class="container container-fit">
+	<table class="table table-striped">
+    <tbody class="text-center" id="notification-list"></tbody>
+  </table>
+</div>
+
+<div class="container text-center hidden" id="no-notification-at-all">
+	<div class="space"></div>
+	<img src="https://res.cloudinary.com/modupen/image/upload/v1440749449/flat%20ui%20icons/pencil.svg" />
+	<div class="space"></div>
+	<p>
+		업데이트 알림이 없습니다
+	</p>
+</div>
+
+{# Virtual DOM for notification element #}
+<table>
+	<tbody>
+		<tr class="notification hidden" id="notification-dom-element" data-notification-id="">
+			<td>
+				<a href="">
+					<input type="hidden" class="created-at" value="" />
+					<div class="notification-message"></div>
+					<div class="notification-preview"></div>
+				</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static 'js/accounts/notifications.js' %}"></script>
+{% endblock %}
