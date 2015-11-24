@@ -7,7 +7,7 @@ from base import *
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 ALLOWED_HOSTS = [
-    'modupen.com',
+    config.get('django', 'project_name') + '.com',
 ]
 INTERNAL_IPS = (
     '127.0.0.1',
@@ -18,10 +18,10 @@ DEVELOPMENT_MODE = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'modupen',
+        'NAME': config.get('django', 'project_name'),
         'USER': 'root',
-        'PASSWORD': config.get('mysql_prod', 'password'),
-        'HOST': config.get('mysql_prod', 'end_point'),
+        'PASSWORD': config.get('mysql:production', 'password'),
+        'HOST': config.get('mysql:production', 'end_point'),
         'PORT': '3306',
         'DEFAULT-CHARACTER-SET': 'utf8',
     }
@@ -31,7 +31,7 @@ DATABASES = {
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': config.get('redis_prod', 'end_point'),
+        'LOCATION': config.get('redis:production', 'end_point'),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -39,9 +39,9 @@ CACHES = {
 }
 
 # Firebase secret code
-FIREBASE_USERNAME = config.get('firebase_dev', 'username')
-FIREBASE_REPO_URL = config.get('firebase_dev', 'repo_url')
-FIREBASE_API_SECRET = config.get('firebase_dev', 'api_secret')
+FIREBASE_USERNAME = config.get('firebase:production', 'username')
+FIREBASE_REPO_URL = config.get('firebase:production', 'repo_url')
+FIREBASE_API_SECRET = config.get('firebase:production', 'api_secret')
 
 # Compressor settings
 COMPRESS_ENABLED = not DEBUG

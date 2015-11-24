@@ -18,9 +18,9 @@ DEVELOPMENT_MODE = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'modupen',
+        'NAME': config.get('django', 'project_name'),
         'USER': 'root',
-        'PASSWORD': config.get('mysql_dev', 'password'),
+        'PASSWORD': config.get('mysql:development', 'password'),
         'HOST': '',
         'PORT': '',
         'DEFAULT-CHARACTER-SET': 'utf8',
@@ -39,9 +39,9 @@ CACHES = {
 }
 
 # Firebase settings
-FIREBASE_USERNAME = config.get('firebase_dev', 'username')
-FIREBASE_REPO_URL = config.get('firebase_dev', 'repo_url')
-FIREBASE_API_SECRET = config.get('firebase_dev', 'api_secret')
+FIREBASE_USERNAME = config.get('firebase:development', 'username')
+FIREBASE_REPO_URL = config.get('firebase:development', 'repo_url')
+FIREBASE_API_SECRET = config.get('firebase:development', 'api_secret')
 
 # Compressor settings
 COMPRESS_ENABLED = not DEBUG

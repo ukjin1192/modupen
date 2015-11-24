@@ -20,13 +20,13 @@ config.read(ROOT_DIR + '/conf/sensitive/configuration.ini')
 
 # Send bug reports on debug mode
 ADMINS = (
-    ('Developer', config.get('django', 'developer_email_address')),
+    ('Developer', config.get('gmail:developer', 'email_address')),
 )
 
 # Send email through SMTP
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = config.get('gmail_smtp', 'email_address')
-EMAIL_HOST_PASSWORD = config.get('gmail_smtp', 'password')
+EMAIL_HOST_USER = config.get('gmail:smtp', 'email_address')
+EMAIL_HOST_PASSWORD = config.get('gmail:smtp', 'password')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 

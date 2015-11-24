@@ -29,11 +29,10 @@ import djcelery
 
 djcelery.setup_loader()
 
-
 # For production mode
 """
 import newrelic.agent
 
-newrelic.agent.initialize(ROOT_DIR + '/conf/sensitive/newrelic.ini')
+newrelic.agent.initialize(ROOT_DIR + '/conf/sensitive/configuration.ini')
 application = newrelic.agent.wsgi_application()(application)
 """

@@ -4,17 +4,25 @@ import os
 from fabric.api import *
 
 ROOT_DIR = os.path.dirname(__file__)
-PROJECT_NAME = "modupen"
 
 # Get sensitive configuration
 config = ConfigParser.ConfigParser()
 config.read(ROOT_DIR + '/conf/sensitive/configuration.ini')
+
+PROJECT_NAME = config.get('django', 'project_name')
 
 # Remote Deploy Server Information
 env.hosts = config.get('fabric', 'ip_address')
 env.user = config.get('fabric', 'username')
 env.key_filename = ROOT_DIR + "/conf/sensitive/remote_server.pem"
 env.port = 22
+
+
+def docker_onboot():
+    local("sudo service nginx start")
+    local("sudo service mysql start")
+    local("sudo service redis-server start")
+    local("sudo service rabbitmq-server start")
 
 
 def run_uwsgi():
