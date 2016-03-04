@@ -1,17 +1,11 @@
-# django-modupen
-
-- Source code of modupen service build with django
-
-
-### What is moduepn?
+## What is moduepn?
 
 - <a href="https://modupen.com" target="_blank">Modupen</a> is a platform for people to make story in relay
 
 
-### What kinds of technologies inside?
+## Architecture
 
-- Based on Amazon Web Service for deployment
-- Django 1.8.6 + Nginx + uWSGI
-- MySQL + Redis
-- Cloudinary for image processing
-- Firebase for real-time database
+- Server side : Django + Nginx + uWSGI
+- Database : MySQL + Redis + Firebase
+- Hosting : Amazon Web Services
+- Cloudinary : Image processing
