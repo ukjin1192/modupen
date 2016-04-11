@@ -1,6 +1,6 @@
 ## What is moduepn?
 
-- <a href="https://modupen.com" target="_blank">Modupen</a> is a platform for people to make story in relay
+- Modupen is a platform for people to make story in relay
 
 
 ## Architecture
